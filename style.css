@@ -451,19 +451,23 @@ body {
   max-height: 45vh;
 }
 
-/* Start positions off screen */
-.fp-left  { left: -160px; }
-.fp-right { right: -160px; }
+/* Fixed landed positions, transform handles slide animation */
+.fp-left  { left: clamp(4px, 2vw, 12px); }
+.fp-right { right: clamp(4px, 2vw, 12px); }
 .fp-1 { top: 5%; }
 .fp-2 { top: 22%; }
 .fp-3 { top: 52%; }
 .fp-4 { top: 68%; }
 
-/* Landed positions — use vw so they don't overlap content on small screens */
-.fp-1.fp-in { left: clamp(4px, 2vw, 12px); opacity: 1; }
-.fp-2.fp-in { right: clamp(4px, 2vw, 12px); opacity: 1; }
-.fp-3.fp-in { left: clamp(4px, 2vw, 12px); opacity: 1; }
-.fp-4.fp-in { right: clamp(4px, 2vw, 12px); opacity: 1; }
+/* Start off-screen via transform */
+.fp-left:not(.fp-in)  { transform: translateX(-160px); }
+.fp-right:not(.fp-in) { transform: translateX(160px); }
+
+/* Landed: slide to position and show */
+.fp-1.fp-in,
+.fp-2.fp-in,
+.fp-3.fp-in,
+.fp-4.fp-in { opacity: 1; transform: translateX(0); }
 
 .finale-text-wrap {
   text-align: center;
