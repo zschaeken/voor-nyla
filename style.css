@@ -288,7 +288,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  /* No overflow:hidden — that was clipping photos on iPhone */
   background: var(--white);
   border-bottom: 1.5px solid var(--green-light);
 }
@@ -300,18 +300,17 @@ body {
   top: 50%;
 }
 
-/* Dynamic positioning based on viewport */
-.peek-left  { left: -2vw; }
-.peek-right { right: -2vw; }
+.peek-left  { left: 4px; }
+.peek-right { right: 4px; }
 
 .peek-slide-left {
-  transform: translateX(-80px) translateY(-50%);
+  transform: translateX(-50px) translateY(-50%);
   opacity: 0;
   transition: transform 0.9s cubic-bezier(0.16,1,0.3,1),
               opacity 0.9s cubic-bezier(0.16,1,0.3,1);
 }
 .peek-slide-right {
-  transform: translateX(80px) translateY(-50%);
+  transform: translateX(50px) translateY(-50%);
   opacity: 0;
   transition: transform 0.9s cubic-bezier(0.16,1,0.3,1),
               opacity 0.9s cubic-bezier(0.16,1,0.3,1);
@@ -319,7 +318,7 @@ body {
 .peek-slide-left.peeked  { transform: translateX(0) translateY(-50%); opacity: 1; }
 .peek-slide-right.peeked { transform: translateX(0) translateY(-50%); opacity: 1; }
 
-/* peek photo frames — fluid width, hard size constraints */
+/* peek photo frames */
 .peek-photo .photo-frame {
   width: 100%;
   aspect-ratio: 3/4;
@@ -435,7 +434,7 @@ body {
   justify-content: center;
 }
 
-/* Finale photos — fluid, viewport-based sizing */
+/* Finale photos */
 .finale-float-photo {
   position: absolute;
   width: clamp(90px, 22vw, 130px);
@@ -451,23 +450,17 @@ body {
   max-height: 45vh;
 }
 
-/* Fixed landed positions, transform handles slide animation */
-.fp-left  { left: clamp(4px, 2vw, 12px); }
-.fp-right { right: clamp(4px, 2vw, 12px); }
+.fp-left  { left: -160px; }
+.fp-right { right: -160px; }
 .fp-1 { top: 5%; }
 .fp-2 { top: 22%; }
 .fp-3 { top: 52%; }
 .fp-4 { top: 68%; }
 
-/* Start off-screen via transform */
-.fp-left:not(.fp-in)  { transform: translateX(-160px); }
-.fp-right:not(.fp-in) { transform: translateX(160px); }
-
-/* Landed: slide to position and show */
-.fp-1.fp-in,
-.fp-2.fp-in,
-.fp-3.fp-in,
-.fp-4.fp-in { opacity: 1; transform: translateX(0); }
+.fp-1.fp-in { left: clamp(4px, 2vw, 12px); opacity: 1; }
+.fp-2.fp-in { right: clamp(4px, 2vw, 12px); opacity: 1; }
+.fp-3.fp-in { left: clamp(4px, 2vw, 12px); opacity: 1; }
+.fp-4.fp-in { right: clamp(4px, 2vw, 12px); opacity: 1; }
 
 .finale-text-wrap {
   text-align: center;
@@ -476,7 +469,6 @@ body {
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 1s ease 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s;
-  /* Ensure text doesn't overlap photos on very small screens */
   padding: 0 clamp(90px, 24vw, 150px);
 }
 .finale-text-wrap.fin-in { opacity: 1; transform: translateY(0); }
@@ -508,7 +500,6 @@ body {
 
 /* ===== MOBILE OVERRIDES ===== */
 @media (max-width: 430px) {
-  /* Peek strip: taller strip, photos smaller but fully visible */
   .peek-strip {
     height: 200px;
   }
@@ -518,7 +509,6 @@ body {
   .peek-left  { left: 4px; }
   .peek-right { right: 4px; }
 
-  /* Finale photos smaller so they don't swamp the text */
   .finale-float-photo {
     width: clamp(72px, 19vw, 100px);
   }
@@ -530,12 +520,10 @@ body {
   .finale-text-wrap {
     padding: 0 clamp(75px, 21vw, 115px);
   }
-
   .finale-big {
     font-size: clamp(2.4rem, 10vw, 4rem);
   }
 
-  /* Story content: make sure images inside stories stay within their column */
   .story-content {
     max-width: 100%;
   }
