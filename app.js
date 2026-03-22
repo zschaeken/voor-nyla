@@ -88,48 +88,29 @@ const peekObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('peeked'); });
   },
-  { threshold: 0.2 }
+  { threshold: 0 }  // fires as soon as any pixel is visible — fixes iPhone clipping issue
 );
 peekEls.forEach(el => peekObserver.observe(el));
 
 
-/* ===== FINALE — IntersectionObserver based (mobile-reliable) ===== */
-const finalePhotos = document.querySelectorAll('.finale-float-photo');
-const finaleText   = document.querySelector('.finale-text-wrap');
-const finaleTrack  = document.querySelector('.finale-track');
+/* ===== FINALE SCROLL ===== */
+const finaleSection = document.querySelector('.finale');
+const finalePhotos  = document.querySelectorAll('.finale-float-photo');
+const finaleText    = document.querySelector('.finale-text-wrap');
 
-if (finaleTrack) {
-  // Observe each photo individually with staggered rootMargin thresholds
+const photoThresholds = [0.08, 0.18, 0.28, 0.38];
+const textThreshold   = 0.55;
+
+window.addEventListener('scroll', () => {
+  if (!finaleSection) return;
+  const rect     = finaleSection.getBoundingClientRect();
+  const total    = finaleSection.offsetHeight - window.innerHeight;
+  const scrolled = -rect.top;
+  const progress = Math.min(Math.max(scrolled / total, 0), 1);
+
   finalePhotos.forEach((photo, i) => {
-    const delay = i * 180; // ms stagger between each photo
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            setTimeout(() => photo.classList.add('fp-in'), delay);
-            observer.unobserve(e.target);
-          }
-        });
-      },
-      {
-        threshold: 0,
-        rootMargin: `0px 0px -${10 + i * 5}% 0px`
-      }
-    );
-    observer.observe(finaleTrack);
+    if (progress >= photoThresholds[i]) photo.classList.add('fp-in');
   });
 
-  // Text appears after a longer delay
-  const textObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          setTimeout(() => finaleText.classList.add('fin-in'), 800);
-          textObserver.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0, rootMargin: '0px 0px -20% 0px' }
-  );
-  textObserver.observe(finaleTrack);
-}
+  if (progress >= textThreshold) finaleText.classList.add('fin-in');
+}, { passive: true });
